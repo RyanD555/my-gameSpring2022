@@ -12,7 +12,7 @@ class Square { //this seems similar to python's self
     }
 
     create(x, y, w, h, speed, color) {
-        return new Square(x, y, w, h, speed, color);
+        return new Square(x, y, w, h, speed, color); //ALWAYS make sure a constructor has all arguements. Creates a lot of problems
     }
 
     draw() {
