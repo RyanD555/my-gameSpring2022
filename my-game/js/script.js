@@ -52,6 +52,7 @@ class Circle { //no inheritance yet, very unfortunate
         this.speed = speed;
         this.xVel = 1;
         this.yVel = 1;
+        allSprites.push(this);
     }
     draw() {
         ctx.beginPath();
@@ -92,29 +93,15 @@ const WIDTH = 1024;
 const HEIGHT = 768;
 const BACKGROUND = "rgb(201, 76, 76)"; //didnt work, doesnt really matter
 const TILE_SIZE = 32;
-const levelLayout = `
-......................############## 
-######................##############
-######......####......##############
-............#######.................
-....................................
-....................................
-...........###......................
-...........###......................
-...........###......................
-##############........####..........
-##############........####..........
-##############........####..........
-....................................
-....................................
-####...#############################`; //i should do this in pygame
+const levelLayout = 
+"......................##############\n######................##############\n######......####......##############\n............#######.................\n....................................\n...........###......................\n...........###......................";
 const levelChars = { //literally just a python dictionary
     ".": "empty",
     "#": Square,
 };
 
 function update() {
-    for (i of allSprites) { //now dont have to call every single object method, just put them in the list at the bottom
+    for (i of allSprites) { //now dont have to call every single object method
         i.update();
     }
 }
@@ -152,27 +139,31 @@ function makeGrid(plan, width) {
 }
 
 function readLevel(grid) {
- let startActors = [];
+    let startActors = [];
     for (y in grid) {
         for (x in grid[y]) {
-
+ 
             let char = grid[y][x];
-
-            if (char != "\n") {
+ 
+            if (char !== "\n" && char !== "\t" && char !== " ") { //done because some text editors see these chars
                 let type = levelChars[char];
                 if (typeof type == "string") {
                     startActors.push(type);
                 } 
                 else {
                     let t = new type;
-                    startActors.push(t.create(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+                    t.x = x * TILE_SIZE;
+                    t.y = y * TILE_SIZE;
+                    t.width = TILE_SIZE;
+                    t.height = TILE_SIZE;
+                    startActors.push(t.create(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)); //undefined
                 }
             }
         }
     }
 }
 
-console.log(readLevel(makeGrid(levelLayout, 36)))
+readLevel(makeGrid(levelLayout, 36));
 
 function init() {
     //div
@@ -188,7 +179,7 @@ function init() {
     canvas.width = WIDTH;
     canvas.height = HEIGHT;
     document.body.appendChild(canvas); //init canvas
-    try { //seems kinda unnecessary honestly
+    try {
         gameDiv.appendChild(canvas);
         console.log("game init");
     } 
@@ -203,4 +194,4 @@ let square0 = new Square(0, 0, 100, 50, 5, "rgb(255, 255, 0)");
 let square1 = new Square(30, 20, 100, 50, 10, "rgb(255, 194, 194)");
 let square2 = new Square(400, 20, 100, 50, 7, "rgb(0, 200, 200)");
 let circle0 = new Circle(300, 300, 50, 90, 8, "rgb(255, 0, 0)");
-let circle1 = new Circle(500, 500, 30, 5, 50, "rgb(0, 0, 0)"); //i should try acceleration here
+let circle1 = new Circle(500, 500, 30, 5, 20, "rgb(0, 0, 0)"); //i should try acceleration here
