@@ -176,7 +176,7 @@ function readLevel(grid) {
                 } 
                 else {
                     let t = new type;
-                    startActors.push(t.create(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, 0, "rgb(0, 0, 255)")); //undefined
+                    startActors.push(t.create(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, 0, "rgb(0, 0, 255)"));
                 }
             }
         }
