@@ -86,7 +86,6 @@ class Circle { //no inheritance yet, very unfortunate
 //globals
 let canvas = null;
 let ctx = null;
-let gameTick = 0; //i dont think that i will use game tics, but it will be nice to have i guess
 let allSprites = [];
 
 const WIDTH = 1024;
@@ -124,6 +123,21 @@ const levelChars = { //literally just a python dictionary
     "#": Square,
 };
 
+//keys
+let keysDown = {};
+let keysUp = {};
+
+addEventListener("keydown", function (event){ //allows us to listen to keys
+    keysDown[event.key] = true;
+    console.log(event);
+}, false);
+
+addEventListener("keyup", function(event) {
+    keysUp[event.key] = true;
+    delete keysDown[event.key];
+    console.log(event);
+}, false);
+
 function update() {
     for (i of allSprites) { //now dont have to call every single object method
         i.update();
@@ -138,9 +152,6 @@ function draw() {
 }
 
 function gameLoop() {
-    //console.log("working");
-    //console.log(gameTick)
-    gameTick++;
     update();
     draw();
     window.requestAnimationFrame(gameLoop); //constantly looks for change, is like pygame.display.flip()
