@@ -22,6 +22,12 @@ class Sprite { //this seems similar to python's self
         ctx.fillRect(this.x, this.y, this.w, this.h);
     }
 
+    collision(obj) {
+        if (this.x + this.w >= obj.x && this.x <= obj.x + obj.w && this.y + this.h >= obj.y && this.y <= obj.y + obj.h) {
+            return true;
+        }
+    }
+
     update() {
         this.x += this.xVel * this.speed;
         this.y += this.yVel * this.speed;
@@ -73,7 +79,6 @@ class Cactus extends Sprite { //inheritance
         this.h = h;
         this.speed = speed;
         this.color = "rgb(0, 255, 0)";
-        allSprites.push(this);
         allWalls.push(this);
     }
 
@@ -261,14 +266,14 @@ const levelLayout = `
 #########...#########...........
 #########...#########...........
 #########...#########...........
-................................
+.......................C........
 .......................#########
 ................................
 ................................
 ................................
 ................................
 ................................
-................................
+..................C.............
 ...........#############........
 ...........#############........
 ................................
@@ -289,13 +294,13 @@ let keysUp = {};
 
 addEventListener("keydown", function (event){ //allows us to listen to keys
     keysDown[event.key] = true;
-    console.log(event);
+    //console.log(event);
 }, false);
 
 addEventListener("keyup", function(event) {
     keysUp[event.key] = true;
     delete keysDown[event.key];
-    console.log(event);
+    //console.log(event);
 }, false);
 
 //Functions
@@ -309,6 +314,12 @@ function update() {
     for (i of allSprites) { //now dont have to call every single object method
         i.update();
     }
+    for (i of allCacti) {
+        if (i.collision(player)) {
+            console.log("hit");
+        }
+    }
+
 }
 
 function draw() {
