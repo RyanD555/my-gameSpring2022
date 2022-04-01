@@ -24,7 +24,7 @@ class Sprite { //this seems similar to python's self
 
     collision(obj) {
         if (this.x + this.w >= obj.x && this.x <= obj.x + obj.w && this.y + this.h >= obj.y && this.y <= obj.y + obj.h) {
-            return true;
+            return true; //fix
         }
     }
 
