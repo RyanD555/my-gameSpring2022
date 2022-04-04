@@ -99,9 +99,7 @@ class Player extends Sprite{
         this.xVel = 0;
         this.yVel = 0;
         this.direction = "up";
-        this.coolDown = false;
-        this.coolTime = 10;
-        this.maxCoolTime = this.coolTime;
+        this.hp = 100;
         allSprites.push(this);
     }
 
@@ -200,6 +198,10 @@ class Player extends Sprite{
         this.input();
         this.x += this.xVel * this.speed;
         this.y += this.yVel * this.speed;
+        //death state
+        if (this.hp <= 0) {
+            console.log("dead");
+        }
     }
 }
 
@@ -315,7 +317,8 @@ function update() {
     }
     for (i of allCacti) {
         if (i.collision(player)) {
-            player.color = "rgb(255, 0, 0)";
+            player.hp--;
+            console.log(player.hp);
         }
     }
 }
