@@ -7,7 +7,7 @@ class Sprite { //this seems similar to python's self
         this.color = color;
         this.xVel = 1;
         this.yVel = 1;
-        this.speed = speed
+        this.speed = speed;
         this.canBounce = true;
         this.isBullet = false;
         allSprites.push(this);
@@ -239,7 +239,7 @@ class Circle {
         }
 
         if (this.y < this.w) {
-            this.yVel = 1
+            this.yVel = 1;
         }
     }
 }
@@ -254,7 +254,6 @@ let bulletCount = 0;
 
 const WIDTH = 1024;
 const HEIGHT = 768;
-const BACKGROUND = "rgb(201, 76, 76)"; //didnt work, doesnt really matter
 const TILE_SIZE = 32;
 const levelLayout = `
 ................................
@@ -280,7 +279,7 @@ const levelLayout = `
 ................................
 ................................
 ..............C.................
-################################`//24 * 32 string grid, hold level layout
+################################`;//24 * 32 string grid, holds level layout
 
 const levelChars = { //literally just a python dictionary
     ".": "empty",
@@ -304,7 +303,7 @@ addEventListener("keyup", function(event) {
 }, false);
 
 //Functions
-function randNum(min, max) {
+function randNum(min, max) { //from stack overflow
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1) + min); 
@@ -316,7 +315,7 @@ function update() {
     }
     for (i of allCacti) {
         if (i.collision(player)) {
-            console.log("hit");
+            player.color = "rgb(255, 0, 0)";
         }
     }
 }
@@ -372,12 +371,11 @@ function readLevel(grid) {
 }
 
 function init() {
-    //div
     let gameDiv = document.createElement("div");
     gameDiv.setAttribute("style", "border: 1px solid;"
     + "width:" + WIDTH + "px;"
     + "height:" + HEIGHT + "px;"
-    + "background-color:" + BACKGROUND + "px; margin-left: auto; margin-right: auto;"); //center div
+    + "margin-left: auto; margin-right: auto;"); //center div
     document.body.appendChild(gameDiv);
     //Canvas
     canvas = document.createElement("canvas"); //makes canvas
