@@ -94,55 +94,32 @@ class Player extends Sprite{
         this.y = y;
         this.w = w;
         this.h = h;
+        this.vx = 0;
+        this.vy = 0;
+        this.gravity = 9.8;
+        this.coFriction = 1.5;
+        this.jumpPower = 5;
         this.color = color;
         this.speed = speed;
-        this.xVel = 0;
-        this.yVel = 0;
-        this.direction = "up";
         this.hp = 100;
+        this.direction = "left";
         allSprites.push(this);
     }
 
     input() {
-        this.xVel = 0;
-        this.yVel = 0;
-        if ("a" in keysDown) {
-            this.direction = "left";
-            this.xVel = -1;
-        }
-
-        if ("d" in keysDown) {
-            this.direction = "right";
-            this.xVel = 1;
-        }
-        
-        if ("w" in keysDown) {
-            this.direction = "up";
-            this.yVel = -1;
-        }
-
-        if ("s" in keysDown) {
-            this.direction = "down";
-            this.yVel += 1;
-        }
-
-        if (this.x > WIDTH - this.w && "d" in keysDown) {
-            this.xVel = 0;
-        }
-
-        if (this.y > HEIGHT - this.h  - this.speed && "s" in keysDown) {
-            this.yVel = 0;
-        }
-
-        if (this.x < 0 && "a" in keysDown) {
-            this.xVel = 0;
-        }
-
-        if (this.y < 0 && "w" in keysDown) {
-            this.yVel = 0;
-        }
-
         if (" " in keysDown) {
+            this.jump();
+        }
+        if ("a" in keysDown) {
+            this.vx = -this.speed;
+            this.direction = "left";
+        }
+        if ("d" in keysDown) {
+            this.vx = this.speed;
+            this.direction = "right";
+        }
+
+        if ("b" in keysDown) {
             this.shoot();
         }
 
@@ -158,6 +135,10 @@ class Player extends Sprite{
                 }
             }
         }
+    }
+
+    jump() {
+        this.vy = this.jumpPower;
     }
 
     draw() {
@@ -194,10 +175,37 @@ class Player extends Sprite{
         return bullet;
     }
 
+    friction() {
+        if (this.vx > 0.5){
+            this.vx -= this.coFriction;
+        }
+        else if (this.vx < -0.5){
+            this.vx += this.coFriction;
+        }
+        else {
+            this.vx = 0;
+        }
+    }
+
     update() {
+        this.vy += this.gravity;
+        this.friction();
         this.input();
-        this.x += this.xVel * this.speed;
-        this.y += this.yVel * this.speed;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.y += 9.8;
+        if (this.x > WIDTH-this.w){
+            this.x = WIDTH-this.w;
+         }
+        if (this.x < 0){
+            this.x = 0;
+         }
+        if (this.y > HEIGHT - this.h){
+            this.y = HEIGHT - this.h;
+         }
+        if (this.y < 0){
+            this.y = 0;
+         }
         //death state
         if (this.hp <= 0) {
             console.log("dead");
@@ -253,6 +261,8 @@ let allSprites = [];
 let allWalls = [];
 let allCacti = [];
 let bulletCount = 0;
+let fps;
+let then = performance.now();
 
 const WIDTH = 1024;
 const HEIGHT = 768;
@@ -311,6 +321,14 @@ function randNum(min, max) { //from stack overflow
     return Math.floor(Math.random() * (max - min + 1) + min); 
 }
 
+function drawText(r, g, b, a, font, align, base, text, x, y) {
+    ctx.fillStyle = "rgba(" + r + "," + g + "," + b + "," + a + ")";
+    ctx.font = font;
+    ctx.textAlign = align;
+    ctx.textBaseline = base;
+    ctx.fillText(text, x, y);
+}
+
 function update() {
     for (i of allSprites) { //now dont have to call every single object method
         i.update();
@@ -328,9 +346,16 @@ function draw() {
     for (i of allSprites) {
         i.draw();
     }
+    drawText(0, 0, 0, 1, "20px Helvetica", "left", "top", "FPS: " + fps, WIDTH - 100, 10);
+    drawText(255, 0, 0, 1, "20px Helvetica", "left", "top", player.hp, 10, 10);
 }
 
 function gameLoop() {
+    now = performance.now();
+    let delta = now - then;
+    fps = (Math.ceil(1000 / delta)); //fps tracking
+    // totaltime = now - then;
+    then = now;
     update();
     draw();
     window.requestAnimationFrame(gameLoop); //constantly looks for change, is like pygame.display.flip()
