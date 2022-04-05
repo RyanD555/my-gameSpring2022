@@ -96,9 +96,9 @@ class Player extends Sprite{
         this.h = h;
         this.vx = 0;
         this.vy = 0;
-        this.gravity = 9.8;
+        this.gravity = 0.5;
         this.coFriction = 1.5;
-        this.jumpPower = 5;
+        this.jumpPower = 10;
         this.color = color;
         this.speed = speed;
         this.hp = 100;
@@ -138,7 +138,8 @@ class Player extends Sprite{
     }
 
     jump() {
-        this.vy = this.jumpPower;
+        this.direction = "up";
+        this.vy = -this.jumpPower;
     }
 
     draw() {
@@ -193,9 +194,8 @@ class Player extends Sprite{
         this.input();
         this.x += this.vx;
         this.y += this.vy;
-        this.y += 9.8;
-        if (this.x > WIDTH-this.w){
-            this.x = WIDTH-this.w;
+        if (this.x > WIDTH - this.w){
+            this.x = WIDTH - this.w;
          }
         if (this.x < 0){
             this.x = 0;
@@ -284,7 +284,7 @@ const levelLayout = `
 ................................
 ................................
 ................................
-..................C.............
+.......................C........
 ..........C#############........
 ...........#############........
 ................................
@@ -347,7 +347,7 @@ function draw() {
         i.draw();
     }
     drawText(0, 0, 0, 1, "20px Helvetica", "left", "top", "FPS: " + fps, WIDTH - 100, 10);
-    drawText(255, 0, 0, 1, "20px Helvetica", "left", "top", player.hp, 10, 10);
+    drawText(255, 0, 0, 1, "20px Helvetica", "left", "top", "Health: " + player.hp, 10, 10);
 }
 
 function gameLoop() {
