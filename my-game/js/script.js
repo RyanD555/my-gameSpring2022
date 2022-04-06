@@ -98,17 +98,22 @@ class Player extends Sprite{
         this.vy = 0;
         this.gravity = 0.5;
         this.coFriction = 1.5;
-        this.jumpPower = 10;
+        this.jumpPower = 15;
+        this.canJump = true;
         this.color = color;
         this.speed = speed;
         this.hp = 100;
+        this.invulnerable = false;
         this.direction = "left";
         allSprites.push(this);
     }
 
     input() {
         if (" " in keysDown) {
-            this.jump();
+            if (this.canJump) {
+                this.jump();
+                this.canJump = false;
+            }
         }
         if ("a" in keysDown) {
             this.vx = -this.speed;
@@ -148,7 +153,7 @@ class Player extends Sprite{
     }
 
     shoot() { //problem is that one key press shoots 4 - 6 bullets
-        let bullet = new Sprite(this.x + (this.w / 2) - 30, this.y + (this.h / 2) - 30, 30, 30, 15, "rgb(" + randNum(0, 255) + "," + randNum(0, 255) + "," + randNum(0, 255) + ")"); //fix
+        let bullet = new Sprite(this.x + (this.w / 2) - 30, this.y + (this.h / 2) - 30, 30, 30, 15, "rgb(" + randNum(0, 255) + "," + randNum(0, 255) + "," + randNum(0, 255) + ")");
         bullet.canBounce = false;
         bullet.isBullet = true;
         bulletCount++;
@@ -160,10 +165,10 @@ class Player extends Sprite{
                 bullet.xVel = 0;
                 bullet.yVel = -1;
                 break;
-            case "down":
-                bullet.xVel = 0;
-                bullet.yVel = 1;
-                break;
+            // case "down":
+            //     bullet.xVel = 0;
+            //     bullet.yVel = 1;
+            //     break;
             case "left":
                 bullet.xVel = -1;
                 bullet.yVel = 0;
@@ -274,7 +279,7 @@ const levelLayout = `
 ..........................C.....
 ....C.....................######
 #########...#########...........
-#########...#########C..........
+#########...#########...........
 #########...#########...........
 #########...#########...........
 .......................C........
@@ -285,7 +290,7 @@ const levelLayout = `
 ................................
 ................................
 .......................C........
-..........C#############........
+...........#############........
 ...........#############........
 ................................
 ................................
@@ -330,13 +335,24 @@ function drawText(r, g, b, a, font, align, base, text, x, y) {
 }
 
 function update() {
-    for (i of allSprites) { //now dont have to call every single object method
-        i.update();
+    for (sprite of allSprites) { //now dont have to call every single object method
+        sprite.update();
     }
-    for (i of allCacti) {
-        if (i.collision(player)) {
-            player.hp--;
-            console.log(player.hp);
+    for (cactus of allCacti) {
+        if (cactus.collision(player)) {
+            if (!player.invulnerable) {
+                player.hp--; //should add damage var
+                player.invulnerable = true;
+                setTimeout(() => {player.invulnerable = false}, 500); //anonymous function, better than lambda, should add hurt interval var
+            }
+        }
+    }
+
+    for (wall of allWalls) {
+        if (wall.collision(player)) { //making the velocities 0 will make walls quicksand
+            player.y = wall.y - player.h;
+            player.vy = 0;
+            player.canJump = true;
         }
     }
 }
@@ -424,9 +440,9 @@ function init() {
 readLevel(makeGrid(levelLayout, 32)); //make sure the width is right, this is perfect width
 
 //instances
-let Sprite0 = new Sprite(0, 0, 100, 50, 5, "rgb(255, 255, 0)");
-let Sprite1 = new Sprite(30, 20, 100, 50, 10, "rgb(255, 194, 194)");
-let Sprite2 = new Sprite(400, 20, 100, 50, 7, "rgb(0, 200, 200)");
-let circle0 = new Circle(300, 300, 50, 90, 8, "rgb(255, 0, 0)");
-let circle1 = new Circle(500, 500, 30, 5, 20, "rgb(0, 0, 0)");
+// let sprite0 = new Sprite(0, 0, 100, 50, 5, "rgb(255, 255, 0)");
+// let sprite1 = new Sprite(30, 20, 100, 50, 10, "rgb(255, 194, 194)");
+// let sprite2 = new Sprite(400, 20, 100, 50, 7, "rgb(0, 200, 200)");
+// let circle0 = new Circle(300, 300, 50, 90, 8, "rgb(255, 0, 0)");
+// let circle1 = new Circle(500, 500, 30, 5, 20, "rgb(0, 0, 0)");
 let player = new Player(WIDTH / 2, HEIGHT / 2, 64, 64, 5, "rgb(255, 255, 0)");
