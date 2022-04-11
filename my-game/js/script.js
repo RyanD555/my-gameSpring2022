@@ -115,7 +115,7 @@ class Player extends Sprite{
                 this.canJump = false;
             }
         }
-        if ("a" in keysDown) {
+        if ("a" in keysDown) { //for some reason, bullets will now work while a key held down. will fix in final project
             this.vx = -this.speed;
             this.direction = "left";
         }
