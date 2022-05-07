@@ -32,7 +32,7 @@ class Sprite { //this seems similar to python's self
         this.x += this.xVel * this.speed;
         this.y += this.yVel * this.speed;
 
-        if (this.canBounce){ 
+        if (this.canBounce){ //for bouncing bullets, should have made seperate bullet class
             if (this.x > WIDTH - this.w) {
                 this.xVel = -1;
             }
